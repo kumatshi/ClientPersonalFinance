@@ -1,15 +1,33 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<Shell
-    x:Class="ClientPersonalFinance.AppShell"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:ClientPersonalFinance"
-    Shell.FlyoutBehavior="Disabled"
-    Title="ClientPersonalFinance">
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:views="clr-namespace:ClientPersonalFinance.Views"
+       x:Class="ClientPersonalFinance.AppShell"
+       Title="Personal Finance"
+       FlyoutBehavior="Disabled">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <ShellContent Title="Вход"
+                  Route="LoginPage"
+                  ContentTemplate="{DataTemplate views:LoginPage}"/>
+
+    <ShellContent Title="Регистрация"
+                  Route="RegisterPage"
+                  ContentTemplate="{DataTemplate views:RegisterPage}"/>
+
+    <ShellContent Title="Главная"
+                  Route="MainPage"
+                  ContentTemplate="{DataTemplate views:MainPage}"/>
+
+    <ShellContent Title="Транзакции"
+                  Route="TransactionsPage"
+                  ContentTemplate="{DataTemplate views:TransactionsPage}"/>
+
+    <ShellContent Title="Счета"
+                  Route="AccountsPage"
+                  ContentTemplate="{DataTemplate views:AccountsPage}"/>
+
+    <ShellContent Title="Категории"
+                  Route="CategoriesPage"
+                  ContentTemplate="{DataTemplate views:CategoriesPage}"/>
 
 </Shell>

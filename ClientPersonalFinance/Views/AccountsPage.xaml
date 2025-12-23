@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ClientPersonalFinance.Views.AccountsPage"
+             Title="Мои счета">
+
+    <RefreshView IsRefreshing="{Binding IsBusy}"
+                 Command="{Binding LoadAccountsCommand}">
+
+        <VerticalStackLayout Spacing="20" Padding="30" VerticalOptions="Center">
+
+            <Label Text="💳 Мои счета" 
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   HorizontalTextAlignment="Center"/>
+
+            <Label Text="Раздел в разработке"
+                   FontSize="16"
+                   TextColor="Gray"
+                   HorizontalTextAlignment="Center"
+                   Margin="0,0,0,30"/>
+
+            <Button Text="🔄 Загрузить счета" 
+                    Command="{Binding LoadAccountsCommand}"
+                    BackgroundColor="#4CAF50"
+                    TextColor="White"
+                    CornerRadius="10"
+                    HeightRequest="50"/>
+
+            <Button Text="← Назад" 
+                    Command="{Binding GoBackCommand}"
+                    BackgroundColor="#757575"
+                    TextColor="White"
+                    CornerRadius="10"
+                    HeightRequest="50"
+                    Margin="0,20"/>
+
+            <ActivityIndicator IsVisible="{Binding IsBusy}"
+                               IsRunning="{Binding IsBusy}"
+                               Color="#4CAF50"
+                               HorizontalOptions="Center"/>
+
+        </VerticalStackLayout>
+    </RefreshView>
+
+</ContentPage>

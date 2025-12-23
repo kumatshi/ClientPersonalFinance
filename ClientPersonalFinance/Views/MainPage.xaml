@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ClientPersonalFinance.Views.MainPage"
+             Title="Главная">
+
+    <RefreshView IsRefreshing="{Binding IsBusy}"
+                 Command="{Binding RefreshCommand}">
+
+        <VerticalStackLayout Spacing="20" Padding="30" VerticalOptions="Center">
+
+            <Label Text="Personal Finance"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   HorizontalTextAlignment="Center"/>
+
+            <Label Text="{Binding WelcomeMessage}"
+                   FontSize="16"
+                   TextColor="Gray"
+                   HorizontalTextAlignment="Center"/>
+
+            <Button Text="📊 Перейти к транзакциям"
+                    Command="{Binding GoToTransactionsCommand}"
+                    BackgroundColor="#2196F3"
+                    TextColor="White"
+                    CornerRadius="10"
+                    HeightRequest="50"
+                    Margin="0,10"/>
+
+            <Button Text="💳 Мои счета"
+                    Command="{Binding GoToAccountsCommand}"
+                    BackgroundColor="#4CAF50"
+                    TextColor="White"
+                    CornerRadius="10"
+                    HeightRequest="50"
+                    Margin="0,10"/>
+
+            <Button Text="🏷️ Категории"
+                    Command="{Binding GoToCategoriesCommand}"
+                    BackgroundColor="#FF9800"
+                    TextColor="White"
+                    CornerRadius="10"
+                    HeightRequest="50"
+                    Margin="0,10"/>
+
+            <Button Text="🚪 Выход"
+                    Command="{Binding LogoutCommand}"
+                    BackgroundColor="#F44336"
+                    TextColor="White"
+                    CornerRadius="10"
+                    HeightRequest="50"
+                    Margin="0,30"/>
+
+            <ActivityIndicator IsVisible="{Binding IsBusy}"
+                               IsRunning="{Binding IsBusy}"
+                               Color="#2196F3"
+                               HorizontalOptions="Center"/>
+
+        </VerticalStackLayout>
+    </RefreshView>
+
+</ContentPage>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ClientPersonalFinance.Views.RegisterPage"
+             Title="Регистрация">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="25" Padding="30,60,30,30">
+
+            <!-- Заголовок -->
+            <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
+                <Label Text="Регистрация" 
+                       FontSize="28" 
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"/>
+                <Label Text="Создайте новый аккаунт"
+                       FontSize="14"
+                       TextColor="Gray"
+                       HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+
+            <!-- Форма регистрации -->
+            <VerticalStackLayout Spacing="15">
+
+                <!-- Имя пользователя -->
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Имя пользователя" 
+                           FontSize="14"
+                           FontAttributes="Bold"/>
+                    <Entry Text="{Binding Username}"
+                           Placeholder="Введите имя пользователя"
+                           ReturnType="Next"/>
+                </VerticalStackLayout>
+
+                <!-- Email -->
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Email" 
+                           FontSize="14"
+                           FontAttributes="Bold"/>
+                    <Entry Text="{Binding Email}"
+                           Placeholder="Введите email"
+                           Keyboard="Email"
+                           ReturnType="Next"/>
+                </VerticalStackLayout>
+
+                <!-- Пароль -->
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Пароль" 
+                           FontSize="14"
+                           FontAttributes="Bold"/>
+                    <Entry Text="{Binding Password}"
+                           Placeholder="Введите пароль"
+                           IsPassword="True"
+                           ReturnType="Next"/>
+                </VerticalStackLayout>
+
+                <!-- Подтверждение пароля -->
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Подтвердите пароль" 
+                           FontSize="14"
+                           FontAttributes="Bold"/>
+                    <Entry Text="{Binding ConfirmPassword}"
+                           Placeholder="Повторите пароль"
+                           IsPassword="True"
+                           ReturnType="Go"/>
+                </VerticalStackLayout>
+
+                <!-- Сообщение об ошибке -->
+                <Frame IsVisible="{Binding HasError}"
+                       BackgroundColor="#FFF2F2"
+                       BorderColor="#FFCCCC"
+                       Padding="15"
+                       CornerRadius="5">
+                    <Label Text="{Binding ErrorMessage}"
+                           TextColor="#D32F2F"
+                           FontSize="13"
+                           HorizontalTextAlignment="Center"/>
+                </Frame>
+
+                <!-- Кнопка регистрации -->
+                <Button Text="Зарегистрироваться" 
+                        Command="{Binding RegisterCommand}"
+                        BackgroundColor="#4CAF50"
+                        TextColor="White"
+                        FontSize="16"
+                        CornerRadius="10"
+                        HeightRequest="50"
+                        IsEnabled="{Binding IsNotBusy}"/>
+
+                <!-- Индикатор загрузки -->
+                <ActivityIndicator IsVisible="{Binding IsBusy}"
+                                   IsRunning="{Binding IsBusy}"
+                                   Color="#4CAF50"
+                                   HorizontalOptions="Center"/>
+
+                <!-- Ссылка на вход -->
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="5">
+                    <Label Text="Уже есть аккаунт?" 
+                           TextColor="Gray"/>
+                    <Label Text="Войти" 
+                           TextColor="#2196F3"
+                           FontAttributes="Bold">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding GoToLoginCommand}"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+                </HorizontalStackLayout>
+
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
