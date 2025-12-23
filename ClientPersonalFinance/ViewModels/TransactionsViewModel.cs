@@ -27,8 +27,12 @@ namespace ClientPersonalFinance.ViewModels
         [ObservableProperty]
         private bool _isAddingTransaction;
 
-        [ObservableProperty]
         private CreateTransactionDto _newTransaction = new();
+        public CreateTransactionDto NewTransaction
+        {
+            get => _newTransaction;
+            set => SetProperty(ref _newTransaction, value);
+        }
 
         [ObservableProperty]
         private ObservableCollection<AccountDto> _accounts = new();
@@ -39,22 +43,80 @@ namespace ClientPersonalFinance.ViewModels
         [ObservableProperty]
         private ObservableCollection<CategoryDto> _filteredCategories = new();
 
-        [ObservableProperty]
         private AccountDto? _selectedAccount;
-
-        [ObservableProperty]
-        private CategoryDto? _selectedCategory;
-
-        public int SelectedTransactionType
+        public AccountDto? SelectedAccount
         {
-            get => _newTransaction.Type;
+            get => _selectedAccount;
             set
             {
-                if (_newTransaction.Type != value)
+                if (SetProperty(ref _selectedAccount, value) && value != null)
                 {
-                    _newTransaction.Type = value;
-                    OnPropertyChanged(nameof(SelectedTransactionType));
+                    NewTransaction.AccountId = value.Id;
+                }
+            }
+        }
+
+        private CategoryDto? _selectedCategory;
+        public CategoryDto? SelectedCategory
+        {
+            get => _selectedCategory;
+            set
+            {
+                if (SetProperty(ref _selectedCategory, value) && value != null)
+                {
+                    NewTransaction.CategoryId = value.Id;
+                }
+            }
+        }
+
+        private int _selectedTransactionType = 1;
+        public int SelectedTransactionType
+        {
+            get => _selectedTransactionType;
+            set
+            {
+                if (SetProperty(ref _selectedTransactionType, value))
+                {
+                    NewTransaction.Type = value;
                     UpdateFilteredCategories();
+                }
+            }
+        }
+        public decimal TransactionAmount
+        {
+            get => NewTransaction.Amount;
+            set
+            {
+                if (NewTransaction.Amount != value)
+                {
+                    NewTransaction.Amount = value;
+                    OnPropertyChanged(nameof(TransactionAmount));
+                }
+            }
+        }
+
+        public string TransactionDescription
+        {
+            get => NewTransaction.Description;
+            set
+            {
+                if (NewTransaction.Description != value)
+                {
+                    NewTransaction.Description = value;
+                    OnPropertyChanged(nameof(TransactionDescription));
+                }
+            }
+        }
+
+        public DateTime TransactionDate
+        {
+            get => NewTransaction.Date;
+            set
+            {
+                if (NewTransaction.Date != value)
+                {
+                    NewTransaction.Date = value;
+                    OnPropertyChanged(nameof(TransactionDate));
                 }
             }
         }
@@ -68,9 +130,8 @@ namespace ClientPersonalFinance.ViewModels
             _categoryService = categoryService;
             Title = "Транзакции";
 
-            // Инициализируем новую транзакцию
             NewTransaction.Date = DateTime.Now;
-            NewTransaction.Type = 1; // По умолчанию расход
+            NewTransaction.Type = 1; 
         }
 
         [RelayCommand]
@@ -164,20 +225,9 @@ namespace ClientPersonalFinance.ViewModels
 
             if (IsAddingTransaction)
             {
-                // Сбрасываем форму при открытии
-                NewTransaction = new CreateTransactionDto
-                {
-                    Date = DateTime.Now,
-                    Type = 1, // По умолчанию расход
-                    Amount = 0
-                };
+                ResetForm();
 
-                // Сбрасываем выбранные значения
-                SelectedAccount = null;
-                SelectedCategory = null;
-                SelectedTransactionType = 1;
 
-                // Загружаем счета и категории если еще не загружены
                 if (!Accounts.Any() || !Categories.Any())
                 {
                     LoadAccountsAndCategoriesCommand.Execute(null);
@@ -191,7 +241,6 @@ namespace ClientPersonalFinance.ViewModels
             if (IsBusy)
                 return;
 
-            // Валидация
             if (NewTransaction.Amount <= 0)
             {
                 await Shell.Current.DisplayAlert("Ошибка", "Сумма должна быть больше 0", "OK");
@@ -220,30 +269,18 @@ namespace ClientPersonalFinance.ViewModels
 
             try
             {
+                Console.WriteLine($"Отправка транзакции: {NewTransaction.Amount}, {NewTransaction.Description}, {NewTransaction.Type}, Категория: {NewTransaction.CategoryId}, Счет: {NewTransaction.AccountId}");
+
                 var result = await _transactionService.CreateTransactionAsync(NewTransaction);
 
                 if (result.Success)
                 {
                     await Shell.Current.DisplayAlert("Успех", "Транзакция добавлена", "OK");
 
-                    // Скрываем форму добавления
                     IsAddingTransaction = false;
-
-                    // Обновляем список транзакций
                     await LoadTransactionsAsync();
                     await LoadSummaryAsync();
-
-                    // Сбрасываем форму
-                    NewTransaction = new CreateTransactionDto
-                    {
-                        Date = DateTime.Now,
-                        Type = 1
-                    };
-
-                    // Сбрасываем выбранные значения
-                    SelectedAccount = null;
-                    SelectedCategory = null;
-                    SelectedTransactionType = 1;
+                    ResetForm();
                 }
                 else
                 {
@@ -293,33 +330,30 @@ namespace ClientPersonalFinance.ViewModels
         }
 
         [RelayCommand]
-        private async Task CancelAddTransactionAsync()
+        private void CancelAddTransactionAsync()
         {
             IsAddingTransaction = false;
+            ResetForm();
+        }
+
+        private void ResetForm()
+        {
             NewTransaction = new CreateTransactionDto
             {
                 Date = DateTime.Now,
-                Type = 1
+                Type = 1,
+                Amount = 0,
+                Description = string.Empty,
+                CategoryId = 0,
+                AccountId = 0
             };
             SelectedAccount = null;
             SelectedCategory = null;
             SelectedTransactionType = 1;
-        }
 
-        partial void OnSelectedAccountChanged(AccountDto? value)
-        {
-            if (value != null)
-            {
-                NewTransaction.AccountId = value.Id;
-            }
-        }
-
-        partial void OnSelectedCategoryChanged(CategoryDto? value)
-        {
-            if (value != null)
-            {
-                NewTransaction.CategoryId = value.Id;
-            }
+            OnPropertyChanged(nameof(TransactionAmount));
+            OnPropertyChanged(nameof(TransactionDescription));
+            OnPropertyChanged(nameof(TransactionDate));
         }
 
         private void UpdateFilteredCategories()
@@ -341,8 +375,6 @@ namespace ClientPersonalFinance.ViewModels
             {
                 FilteredCategories = new ObservableCollection<CategoryDto>();
             }
-
-            // Сбрасываем выбранную категорию при смене типа
             SelectedCategory = null;
         }
     }

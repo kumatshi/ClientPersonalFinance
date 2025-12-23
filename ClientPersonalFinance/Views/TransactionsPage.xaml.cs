@@ -13,7 +13,6 @@ namespace ClientPersonalFinance.Views
         {
             InitializeComponent();
 
-            // Получаем ViewModel через Dependency Injection
             var transactionService = MauiProgram.Services.GetRequiredService<ITransactionService>();
             var accountService = MauiProgram.Services.GetRequiredService<IAccountService>();
             var categoryService = MauiProgram.Services.GetRequiredService<ICategoryService>();

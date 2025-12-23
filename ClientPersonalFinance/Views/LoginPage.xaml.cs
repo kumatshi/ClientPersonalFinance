@@ -13,7 +13,6 @@ namespace ClientPersonalFinance.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            // Очищаем поля при открытии страницы
             if (BindingContext is LoginViewModel viewModel)
             {
                 viewModel.Password = string.Empty;

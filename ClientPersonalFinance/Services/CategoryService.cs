@@ -105,7 +105,6 @@ namespace ClientPersonalFinance.Services
             }
         }
 
-        // Заглушки для остальных методов
         public Task<ApiResponse<CategoryDto>> GetCategoryByIdAsync(int id)
         {
             throw new NotImplementedException();

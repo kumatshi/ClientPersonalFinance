@@ -34,25 +34,27 @@
                         <VerticalStackLayout Spacing="5">
                             <Label Text="Сумма *" 
                                    FontSize="14"/>
-                            <Entry Text="{Binding NewTransaction.Amount}"
+                            <Entry Text="{Binding TransactionAmount, StringFormat='{0:F2}'}"
                                    Placeholder="0.00"
-                                   Keyboard="Numeric"/>
+                                   Keyboard="Numeric"
+                                   ClearButtonVisibility="WhileEditing"/>
                         </VerticalStackLayout>
 
                         <!-- Описание -->
                         <VerticalStackLayout Spacing="5">
                             <Label Text="Описание *" 
                                    FontSize="14"/>
-                            <Entry Text="{Binding NewTransaction.Description}"
+                            <Entry Text="{Binding TransactionDescription}"
                                    Placeholder="На что потратили/получили"
-                                   MaxLength="200"/>
+                                   MaxLength="200"
+                                   ClearButtonVisibility="WhileEditing"/>
                         </VerticalStackLayout>
 
                         <!-- Дата -->
                         <VerticalStackLayout Spacing="5">
                             <Label Text="Дата" 
                                    FontSize="14"/>
-                            <DatePicker Date="{Binding NewTransaction.Date}"
+                            <DatePicker Date="{Binding TransactionDate}"
                                         Format="dd.MM.yyyy"/>
                         </VerticalStackLayout>
 
@@ -106,6 +108,19 @@
                                     CornerRadius="10"
                                     WidthRequest="120"/>
                         </HorizontalStackLayout>
+
+                        <!-- Отладочная информация -->
+                        <Frame IsVisible="False" BackgroundColor="#FFF3E0" Padding="10">
+                            <VerticalStackLayout>
+                                <Label Text="Отладка:" FontSize="12" FontAttributes="Bold"/>
+                                <Label Text="{Binding NewTransaction.Amount, StringFormat='Сумма: {0}'}" FontSize="10"/>
+                                <Label Text="{Binding NewTransaction.Description, StringFormat='Описание: {0}'}" FontSize="10"/>
+                                <Label Text="{Binding NewTransaction.Type, StringFormat='Тип: {0}'}" FontSize="10"/>
+                                <Label Text="{Binding NewTransaction.CategoryId, StringFormat='Категория ID: {0}'}" FontSize="10"/>
+                                <Label Text="{Binding NewTransaction.AccountId, StringFormat='Счет ID: {0}'}" FontSize="10"/>
+                            </VerticalStackLayout>
+                        </Frame>
+
                     </VerticalStackLayout>
                 </Frame>
 

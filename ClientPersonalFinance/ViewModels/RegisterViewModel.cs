@@ -39,7 +39,6 @@ namespace ClientPersonalFinance.ViewModels
             if (IsBusy)
                 return;
 
-            // Валидация
             if (string.IsNullOrWhiteSpace(Username) || Username.Length < 3)
             {
                 ErrorMessage = "Имя пользователя должно быть не менее 3 символов";

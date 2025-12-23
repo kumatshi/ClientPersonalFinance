@@ -63,7 +63,6 @@ namespace ClientPersonalFinance.ViewModels
 
                 if (result.Success)
                 {
-                    // Успешный вход
                     await Shell.Current.GoToAsync("//MainPage");
                     Password = string.Empty;
                 }

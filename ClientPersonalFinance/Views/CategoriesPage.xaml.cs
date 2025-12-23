@@ -1,13 +1,21 @@
+using ClientPersonalFinance.Services;
 using ClientPersonalFinance.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ClientPersonalFinance.Views
 {
     public partial class CategoriesPage : ContentPage
     {
-        public CategoriesPage(CategoriesViewModel viewModel)
+        public CategoriesPage()
         {
             InitializeComponent();
-            BindingContext = viewModel;
+            var categoryService = MauiProgram.Services.GetRequiredService<ICategoryService>();
+            BindingContext = new CategoriesViewModel(categoryService);
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
         }
     }
 }

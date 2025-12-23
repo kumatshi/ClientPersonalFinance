@@ -1,46 +1,221 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:ClientPersonalFinance.Converters"
              x:Class="ClientPersonalFinance.Views.CategoriesPage"
              Title="Категории">
+
+    <ContentPage.Resources>
+        <converters:NotNullConverter x:Key="NotNullConverter" />
+        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+        <converters:TabSelectionConverter x:Key="TabSelectionConverter" />
+    </ContentPage.Resources>
 
     <RefreshView IsRefreshing="{Binding IsBusy}"
                  Command="{Binding LoadCategoriesCommand}">
 
-        <VerticalStackLayout Spacing="20" Padding="30" VerticalOptions="Center">
+        <ScrollView>
+            <VerticalStackLayout Spacing="20" Padding="20">
 
-            <Label Text="🏷️ Категории" 
-                   FontSize="24"
-                   FontAttributes="Bold"
-                   HorizontalTextAlignment="Center"/>
+                <!-- Статус -->
+                <Label Text="{Binding StatusMessage}"
+                       FontSize="14"
+                       TextColor="Gray"
+                       HorizontalOptions="Center"/>
 
-            <Label Text="Раздел в разработке"
-                   FontSize="16"
-                   TextColor="Gray"
-                   HorizontalTextAlignment="Center"
-                   Margin="0,0,0,30"/>
+                <!-- Заголовок и кнопки -->
+                <HorizontalStackLayout>
+                    <Label Text="🏷️ Категории" 
+                           FontSize="18" FontAttributes="Bold"
+                           VerticalOptions="Center"/>
 
-            <Button Text="🔄 Загрузить категории" 
-                    Command="{Binding LoadCategoriesCommand}"
-                    BackgroundColor="#FF9800"
-                    TextColor="White"
-                    CornerRadius="10"
-                    HeightRequest="50"/>
+                    <Button Text="➕"
+                            Command="{Binding AddCategoryCommand}"
+                            BackgroundColor="#4CAF50"
+                            TextColor="White"
+                            FontSize="16"
+                            CornerRadius="20"
+                            Margin="10,0,5,0"
+                            WidthRequest="40"
+                            HeightRequest="40"/>
 
-            <Button Text="← Назад" 
-                    Command="{Binding GoBackCommand}"
-                    BackgroundColor="#757575"
-                    TextColor="White"
-                    CornerRadius="10"
-                    HeightRequest="50"
-                    Margin="0,20"/>
+                    <Button Text="🔄"
+                            Command="{Binding RefreshCommand}"
+                            BackgroundColor="#2196F3"
+                            TextColor="White"
+                            FontSize="16"
+                            CornerRadius="20"
+                            Margin="5,0,0,0"
+                            WidthRequest="40"
+                            HeightRequest="40"/>
+                </HorizontalStackLayout>
 
-            <ActivityIndicator IsVisible="{Binding IsBusy}"
-                               IsRunning="{Binding IsBusy}"
-                               Color="#FF9800"
-                               HorizontalOptions="Center"/>
+                <!-- Упрощенные кнопки фильтрации -->
+                <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+                    <Button Text="📥 Загрузить все"
+                            Command="{Binding LoadCategoriesCommand}"
+                            BackgroundColor="#FF9800"
+                            TextColor="White"
+                            CornerRadius="10"
+                            HeightRequest="40"
+                            IsEnabled="{Binding IsNotBusy}"/>
+                </HorizontalStackLayout>
 
-        </VerticalStackLayout>
+                <!-- Кнопка загрузки если нет данных -->
+                <Button Text="📥 Загрузить категории"
+                        Command="{Binding LoadCategoriesCommand}"
+                        BackgroundColor="#FF9800"
+                        TextColor="White"
+                        CornerRadius="10"
+                        HeightRequest="50"
+                        IsEnabled="{Binding IsNotBusy}"
+                        IsVisible="{Binding HasData, Converter={StaticResource InverseBooleanConverter}}"/>
+
+                <!-- Сообщение при отсутствии данных -->
+                <Label Text="Нет категорий. Нажмите 'Загрузить категории'"
+                       IsVisible="{Binding HasData, Converter={StaticResource InverseBooleanConverter}}"
+                       HorizontalOptions="Center" VerticalOptions="Center"
+                       FontSize="16" TextColor="Gray" Margin="0,50"/>
+
+                <!-- Все категории -->
+                <VerticalStackLayout IsVisible="{Binding HasData}">
+
+                    <!-- Доходы -->
+                    <Frame IsVisible="{Binding IncomeCategories.Count, Converter={StaticResource NotNullConverter}}"
+                           BackgroundColor="#E8F5E9"
+                           BorderColor="#4CAF50"
+                           Padding="15"
+                           CornerRadius="10"
+                           Margin="0,0,0,10">
+                        <VerticalStackLayout Spacing="10">
+                            <Label Text="📈 Категории доходов" 
+                                   FontSize="16" 
+                                   FontAttributes="Bold"
+                                   TextColor="#2E7D32"/>
+
+                            <CollectionView ItemsSource="{Binding IncomeCategories}"
+                                            SelectionMode="None">
+
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Frame BackgroundColor="White" 
+                                               Padding="10" CornerRadius="8"
+                                               Margin="0,0,0,5">
+                                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                                <!-- Цвет категории -->
+                                                <BoxView Color="{Binding Color}"
+                                                         WidthRequest="20"
+                                                         HeightRequest="20"
+                                                         CornerRadius="10"
+                                                         Grid.Column="0"
+                                                         VerticalOptions="Center"/>
+
+                                                <!-- Название категории -->
+                                                <Label Text="{Binding Name}" 
+                                                       Grid.Column="1"
+                                                       FontSize="14"
+                                                       VerticalOptions="Center"
+                                                       Margin="10,0"/>
+
+                                                <!-- Кнопка удаления -->
+                                                <Button Text="🗑️" 
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteCategoryCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        BackgroundColor="Transparent"
+                                                        TextColor="#F44336"
+                                                        FontSize="14"
+                                                        Grid.Column="2"/>
+                                            </Grid>
+                                        </Frame>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!-- Расходы -->
+                    <Frame IsVisible="{Binding ExpenseCategories.Count, Converter={StaticResource NotNullConverter}}"
+                           BackgroundColor="#FFEBEE"
+                           BorderColor="#F44336"
+                           Padding="15"
+                           CornerRadius="10">
+                        <VerticalStackLayout Spacing="10">
+                            <Label Text="📉 Категории расходов" 
+                                   FontSize="16" 
+                                   FontAttributes="Bold"
+                                   TextColor="#C62828"/>
+
+                            <CollectionView ItemsSource="{Binding ExpenseCategories}"
+                                            SelectionMode="None">
+
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Frame BackgroundColor="White" 
+                                               Padding="10" CornerRadius="8"
+                                               Margin="0,0,0,5">
+                                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                                <!-- Цвет категории -->
+                                                <BoxView Color="{Binding Color}"
+                                                         WidthRequest="20"
+                                                         HeightRequest="20"
+                                                         CornerRadius="10"
+                                                         Grid.Column="0"
+                                                         VerticalOptions="Center"/>
+
+                                                <!-- Название категории -->
+                                                <Label Text="{Binding Name}" 
+                                                       Grid.Column="1"
+                                                       FontSize="14"
+                                                       VerticalOptions="Center"
+                                                       Margin="10,0"/>
+
+                                                <!-- Бюджет -->
+                                                <Label Text="{Binding MonthlyBudget, StringFormat='Бюджет: {0:C}'}" 
+                                                       Grid.Column="1"
+                                                       FontSize="12"
+                                                       TextColor="Gray"
+                                                       VerticalOptions="Center"
+                                                       HorizontalOptions="End"/>
+
+                                                <!-- Кнопка удаления -->
+                                                <Button Text="🗑️" 
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteCategoryCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        BackgroundColor="Transparent"
+                                                        TextColor="#F44336"
+                                                        FontSize="14"
+                                                        Grid.Column="2"/>
+                                            </Grid>
+                                        </Frame>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </VerticalStackLayout>
+                    </Frame>
+
+                </VerticalStackLayout>
+
+                <!-- Кнопка обновления если есть данные -->
+                <Button Text="🔄 Обновить список" 
+                        Command="{Binding RefreshCommand}"
+                        BackgroundColor="#2196F3"
+                        TextColor="White"
+                        CornerRadius="10"
+                        HeightRequest="40"
+                        IsEnabled="{Binding IsNotBusy}"
+                        IsVisible="{Binding HasData}"/>
+
+                <!-- Кнопка назад -->
+                <Button Text="← Назад" 
+                        Command="{Binding GoBackCommand}"
+                        BackgroundColor="#757575"
+                        TextColor="White"
+                        CornerRadius="10"
+                        HeightRequest="40"
+                        Margin="0,20"/>
+
+            </VerticalStackLayout>
+        </ScrollView>
     </RefreshView>
 
 </ContentPage>

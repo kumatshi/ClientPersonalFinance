@@ -1,46 +1,166 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:ClientPersonalFinance.Converters"
              x:Class="ClientPersonalFinance.Views.AccountsPage"
              Title="Мои счета">
+
+    <ContentPage.Resources>
+        <converters:BalanceColorConverter x:Key="BalanceColorConverter" />
+        <converters:NotNullConverter x:Key="NotNullConverter" />
+        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+    </ContentPage.Resources>
 
     <RefreshView IsRefreshing="{Binding IsBusy}"
                  Command="{Binding LoadAccountsCommand}">
 
-        <VerticalStackLayout Spacing="20" Padding="30" VerticalOptions="Center">
+        <ScrollView>
+            <VerticalStackLayout Spacing="20" Padding="20">
 
-            <Label Text="💳 Мои счета" 
-                   FontSize="24"
-                   FontAttributes="Bold"
-                   HorizontalTextAlignment="Center"/>
+                <!-- Статус -->
+                <Label Text="{Binding StatusMessage}"
+                       FontSize="14"
+                       TextColor="Gray"
+                       HorizontalOptions="Center"/>
 
-            <Label Text="Раздел в разработке"
-                   FontSize="16"
-                   TextColor="Gray"
-                   HorizontalTextAlignment="Center"
-                   Margin="0,0,0,30"/>
+                <!-- Общий баланс -->
+                <Frame IsVisible="{Binding HasData}"
+                       BackgroundColor="#E3F2FD"
+                       BorderColor="#2196F3"
+                       Padding="15"
+                       CornerRadius="10">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="💰 Общий баланс" 
+                               FontSize="16" 
+                               FontAttributes="Bold"
+                               TextColor="#0D47A1"/>
 
-            <Button Text="🔄 Загрузить счета" 
-                    Command="{Binding LoadAccountsCommand}"
-                    BackgroundColor="#4CAF50"
-                    TextColor="White"
-                    CornerRadius="10"
-                    HeightRequest="50"/>
+                        <Label Text="{Binding TotalBalance, StringFormat='{0:C}'}"
+                               FontSize="24"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"
+                               TextColor="{Binding TotalBalance, Converter={StaticResource BalanceColorConverter}}"/>
+                    </VerticalStackLayout>
+                </Frame>
 
-            <Button Text="← Назад" 
-                    Command="{Binding GoBackCommand}"
-                    BackgroundColor="#757575"
-                    TextColor="White"
-                    CornerRadius="10"
-                    HeightRequest="50"
-                    Margin="0,20"/>
+                <!-- Заголовок и кнопки -->
+                <HorizontalStackLayout>
+                    <Label Text="💳 Мои счета" 
+                           FontSize="18" FontAttributes="Bold"
+                           VerticalOptions="Center"/>
 
-            <ActivityIndicator IsVisible="{Binding IsBusy}"
-                               IsRunning="{Binding IsBusy}"
-                               Color="#4CAF50"
-                               HorizontalOptions="Center"/>
+                    <Button Text="➕"
+                            Command="{Binding AddAccountCommand}"
+                            BackgroundColor="#4CAF50"
+                            TextColor="White"
+                            FontSize="16"
+                            CornerRadius="20"
+                            Margin="10,0,5,0"
+                            WidthRequest="40"
+                            HeightRequest="40"/>
 
-        </VerticalStackLayout>
+                    <Button Text="🔄"
+                            Command="{Binding RefreshCommand}"
+                            BackgroundColor="#2196F3"
+                            TextColor="White"
+                            FontSize="16"
+                            CornerRadius="20"
+                            Margin="5,0,0,0"
+                            WidthRequest="40"
+                            HeightRequest="40"/>
+                </HorizontalStackLayout>
+
+                <!-- Кнопка загрузки если нет данных -->
+                <Button Text="📥 Загрузить счета"
+                        Command="{Binding LoadAccountsCommand}"
+                        BackgroundColor="#2196F3"
+                        TextColor="White"
+                        CornerRadius="10"
+                        HeightRequest="50"
+                        IsEnabled="{Binding IsNotBusy}"
+                        IsVisible="{Binding HasData, Converter={StaticResource InverseBooleanConverter}}"/>
+
+                <!-- Сообщение при отсутствии данных -->
+                <Label Text="Нет счетов. Нажмите 'Загрузить счета'"
+                       IsVisible="{Binding HasData, Converter={StaticResource InverseBooleanConverter}}"
+                       HorizontalOptions="Center" VerticalOptions="Center"
+                       FontSize="16" TextColor="Gray" Margin="0,50"/>
+
+                <!-- Список счетов -->
+                <CollectionView ItemsSource="{Binding Accounts}"
+                                IsVisible="{Binding HasData}"
+                                SelectionMode="None">
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame BackgroundColor="White" 
+                                   Padding="15" CornerRadius="10"
+                                   Margin="0,0,0,10"
+                                   HasShadow="True">
+
+                                <Grid ColumnDefinitions="*, Auto" RowDefinitions="*,*,*">
+                                    <!-- Название счета -->
+                                    <Label Text="{Binding Name}" 
+                                           Grid.Row="0" Grid.Column="0"
+                                           FontSize="16" FontAttributes="Bold"
+                                           LineBreakMode="TailTruncation"/>
+
+                                    <!-- Баланс -->
+                                    <Label Text="{Binding Balance, StringFormat='{0:C}'}" 
+                                           Grid.Row="0" Grid.Column="1"
+                                           FontSize="18" FontAttributes="Bold"
+                                           TextColor="{Binding Balance, Converter={StaticResource BalanceColorConverter}}"/>
+
+                                    <!-- Тип счета -->
+                                    <Label Text="{Binding Type}" 
+                                           Grid.Row="1" Grid.Column="0"
+                                           FontSize="12" TextColor="Gray"/>
+
+                                    <!-- Валюта -->
+                                    <Label Text="{Binding Currency}" 
+                                           Grid.Row="2" Grid.Column="0"
+                                           FontSize="12" TextColor="Gray"/>
+
+                                    <!-- Количество транзакций -->
+                                    <Label Text="{Binding TransactionCount, StringFormat='Транзакций: {0}'}" 
+                                           Grid.Row="1" Grid.Column="1"
+                                           FontSize="11" TextColor="Gray"/>
+
+                                    <!-- Кнопка удаления -->
+                                    <Button Text="🗑️" 
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteAccountCommand}"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="Transparent"
+                                            TextColor="#F44336"
+                                            FontSize="16"
+                                            Grid.Row="2" Grid.Column="1"/>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- Кнопка обновления если есть данные -->
+                <Button Text="🔄 Обновить список" 
+                        Command="{Binding RefreshCommand}"
+                        BackgroundColor="#2196F3"
+                        TextColor="White"
+                        CornerRadius="10"
+                        HeightRequest="40"
+                        IsEnabled="{Binding IsNotBusy}"
+                        IsVisible="{Binding HasData}"/>
+
+                <!-- Кнопка назад -->
+                <Button Text="← Назад" 
+                        Command="{Binding GoBackCommand}"
+                        BackgroundColor="#757575"
+                        TextColor="White"
+                        CornerRadius="10"
+                        HeightRequest="40"
+                        Margin="0,20"/>
+
+            </VerticalStackLayout>
+        </ScrollView>
     </RefreshView>
 
 </ContentPage>

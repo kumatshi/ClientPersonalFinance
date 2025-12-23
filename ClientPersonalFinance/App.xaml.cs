@@ -6,7 +6,6 @@ public partial class App : Application
     {
         InitializeComponent();
 
-        // Создаем Shell как главную страницу
         MainPage = new AppShell();
     }
 }

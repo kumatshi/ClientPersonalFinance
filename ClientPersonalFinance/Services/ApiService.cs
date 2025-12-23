@@ -45,7 +45,6 @@ namespace ClientPersonalFinance.Services
             {
                 Console.WriteLine($"[DEBUG] Тестируем соединение с: {BaseUrl}");
 
-                // Пробуем получить Swagger JSON или просто сделать GET запрос
                 var response = await _httpClient.GetAsync("swagger/v1/swagger.json");
                 var responseString = await response.Content.ReadAsStringAsync();
 
@@ -66,7 +65,6 @@ namespace ClientPersonalFinance.Services
                 Console.WriteLine($"[ERROR] Тест соединения: {ex.Message}");
                 Console.WriteLine($"[ERROR] Подробности: {ex.InnerException?.Message}");
 
-                // Пробуем без пути API
                 try
                 {
                     var simpleClient = new HttpClient()
@@ -112,7 +110,6 @@ namespace ClientPersonalFinance.Services
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    // Пробуем десериализовать как ErrorResponse для получения сообщения
                     try
                     {
                         var errorResult = JsonConvert.DeserializeObject<ApiResponse<AuthResponseDto>>(responseString);
@@ -138,12 +135,10 @@ namespace ClientPersonalFinance.Services
                 {
                     Console.WriteLine($"[DEBUG] Успешная авторизация для пользователя: {result.Data.Username}");
 
-                    // Сохраняем токены
                     await SecureStorage.SetAsync("AuthToken", result.Data.AccessToken);
                     await SecureStorage.SetAsync("RefreshToken", result.Data.RefreshToken);
                     await SecureStorage.SetAsync("UserId", result.Data.UserId.ToString());
 
-                    // Устанавливаем заголовок авторизации
                     _httpClient.DefaultRequestHeaders.Authorization =
                         new AuthenticationHeaderValue("Bearer", result.Data.AccessToken);
                 }
@@ -247,7 +242,7 @@ namespace ClientPersonalFinance.Services
             }
             catch (Exception)
             {
-                // Игнорируем ошибки при выходе
+                
             }
         }
 

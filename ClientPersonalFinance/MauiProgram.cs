@@ -10,7 +10,6 @@ namespace ClientPersonalFinance;
 
 public static class MauiProgram
 {
-    // Публичное статическое свойство для доступа к ServiceProvider
     public static IServiceProvider Services { get; private set; }
 
     public static MauiApp CreateMauiApp()
@@ -45,7 +44,6 @@ public static class MauiProgram
         builder.Services.AddTransient<LoginViewModel>();
         builder.Services.AddTransient<RegisterViewModel>();
         builder.Services.AddTransient<MainViewModel>();
-        // В MauiProgram.cs обновите регистрацию TransactionsViewModel:
         builder.Services.AddTransient<TransactionsViewModel>();
         builder.Services.AddTransient<AccountsViewModel>();
         builder.Services.AddTransient<CategoriesViewModel>();
@@ -60,7 +58,7 @@ public static class MauiProgram
 
         var app = builder.Build();
 
-        // Сохраняем ServiceProvider в статическое свойство
+
         Services = app.Services;
 
         return app;

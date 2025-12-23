@@ -157,13 +157,11 @@ namespace ClientPersonalFinance.Services
             }
         }
 
-        // Заглушки для остальных методов
         public Task<ApiResponse<TransactionDto>> GetTransactionByIdAsync(int id)
         {
             throw new NotImplementedException();
         }
 
-        // Добавляем этот метод
         public async Task<ApiResponse<TransactionDto>> CreateTransactionAsync(CreateTransactionDto transaction)
         {
             try
