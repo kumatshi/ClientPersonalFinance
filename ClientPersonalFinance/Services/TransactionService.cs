@@ -163,9 +163,41 @@ namespace ClientPersonalFinance.Services
             throw new NotImplementedException();
         }
 
-        public Task<ApiResponse<TransactionDto>> CreateTransactionAsync(CreateTransactionDto transaction)
+        // Добавляем этот метод
+        public async Task<ApiResponse<TransactionDto>> CreateTransactionAsync(CreateTransactionDto transaction)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var json = JsonConvert.SerializeObject(transaction);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PostAsync("transactions", content);
+                var responseString = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new ApiResponse<TransactionDto>
+                    {
+                        Success = false,
+                        Message = $"Ошибка: {response.StatusCode}"
+                    };
+                }
+
+                return JsonConvert.DeserializeObject<ApiResponse<TransactionDto>>(responseString)
+                    ?? new ApiResponse<TransactionDto>
+                    {
+                        Success = false,
+                        Message = "Не удалось десериализовать ответ"
+                    };
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse<TransactionDto>
+                {
+                    Success = false,
+                    Message = $"Ошибка: {ex.Message}"
+                };
+            }
         }
 
         public Task<ApiResponse<TransactionDto>> UpdateTransactionAsync(int id, UpdateTransactionDto transaction)

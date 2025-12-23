@@ -45,6 +45,7 @@ public static class MauiProgram
         builder.Services.AddTransient<LoginViewModel>();
         builder.Services.AddTransient<RegisterViewModel>();
         builder.Services.AddTransient<MainViewModel>();
+        // В MauiProgram.cs обновите регистрацию TransactionsViewModel:
         builder.Services.AddTransient<TransactionsViewModel>();
         builder.Services.AddTransient<AccountsViewModel>();
         builder.Services.AddTransient<CategoriesViewModel>();

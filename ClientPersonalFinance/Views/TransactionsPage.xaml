@@ -9,6 +9,7 @@
         <converters:BalanceColorConverter x:Key="BalanceColorConverter" />
         <converters:TransactionTypeColorConverter x:Key="TransactionTypeColorConverter" />
         <converters:NotNullConverter x:Key="NotNullConverter" />
+        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
     </ContentPage.Resources>
 
     <RefreshView IsRefreshing="{Binding IsBusy}"
@@ -16,6 +17,97 @@
 
         <ScrollView>
             <VerticalStackLayout Spacing="20" Padding="20">
+
+                <!-- Форма добавления транзакции -->
+                <Frame IsVisible="{Binding IsAddingTransaction}"
+                       BackgroundColor="#E8F5E9"
+                       BorderColor="#4CAF50"
+                       Padding="15"
+                       CornerRadius="10">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="➕ Новая транзакция" 
+                               FontSize="16" 
+                               FontAttributes="Bold"
+                               TextColor="#2E7D32"/>
+
+                        <!-- Сумма -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Сумма *" 
+                                   FontSize="14"/>
+                            <Entry Text="{Binding NewTransaction.Amount}"
+                                   Placeholder="0.00"
+                                   Keyboard="Numeric"/>
+                        </VerticalStackLayout>
+
+                        <!-- Описание -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Описание *" 
+                                   FontSize="14"/>
+                            <Entry Text="{Binding NewTransaction.Description}"
+                                   Placeholder="На что потратили/получили"
+                                   MaxLength="200"/>
+                        </VerticalStackLayout>
+
+                        <!-- Дата -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Дата" 
+                                   FontSize="14"/>
+                            <DatePicker Date="{Binding NewTransaction.Date}"
+                                        Format="dd.MM.yyyy"/>
+                        </VerticalStackLayout>
+
+                        <!-- Тип транзакции -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Тип *" 
+                                   FontSize="14"/>
+                            <Picker Title="Выберите тип"
+                                    SelectedIndex="{Binding SelectedTransactionType}">
+                                <Picker.Items>
+                                    <x:String>Доход</x:String>
+                                    <x:String>Расход</x:String>
+                                </Picker.Items>
+                            </Picker>
+                        </VerticalStackLayout>
+
+                        <!-- Счет -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Счет *" 
+                                   FontSize="14"/>
+                            <Picker Title="Выберите счет"
+                                    ItemsSource="{Binding Accounts}"
+                                    ItemDisplayBinding="{Binding Name}"
+                                    SelectedItem="{Binding SelectedAccount}"/>
+                        </VerticalStackLayout>
+
+                        <!-- Категория -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Категория *" 
+                                   FontSize="14"/>
+                            <Picker Title="Выберите категорию"
+                                    ItemsSource="{Binding FilteredCategories}"
+                                    ItemDisplayBinding="{Binding Name}"
+                                    SelectedItem="{Binding SelectedCategory}"/>
+                        </VerticalStackLayout>
+
+                        <!-- Кнопки формы -->
+                        <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+                            <Button Text="✅ Добавить"
+                                    Command="{Binding AddTransactionCommand}"
+                                    BackgroundColor="#4CAF50"
+                                    TextColor="White"
+                                    CornerRadius="10"
+                                    WidthRequest="120"
+                                    IsEnabled="{Binding IsNotBusy}"/>
+
+                            <Button Text="❌ Отмена"
+                                    Command="{Binding CancelAddTransactionCommand}"
+                                    BackgroundColor="#F44336"
+                                    TextColor="White"
+                                    CornerRadius="10"
+                                    WidthRequest="120"/>
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </Frame>
 
                 <!-- Статус -->
                 <Label Text="{Binding StatusMessage}"
@@ -53,23 +145,36 @@
                     </VerticalStackLayout>
                 </Frame>
 
-                <!-- Заголовок списка -->
+                <!-- Заголовок и кнопка добавления -->
                 <HorizontalStackLayout>
                     <Label Text="📋 Транзакции" 
                            FontSize="18" FontAttributes="Bold"
                            VerticalOptions="Center"/>
 
-                    <Button Text="➕"
-                            Command="{Binding AddTransactionCommand}"
-                            BackgroundColor="Transparent"
-                            TextColor="#2196F3"
-                            FontSize="20"
-                            Margin="10,0,0,0"/>
+                    <Button Text="➕ Добавить"
+                            Command="{Binding ToggleAddTransactionCommand}"
+                            BackgroundColor="#2196F3"
+                            TextColor="White"
+                            FontSize="14"
+                            CornerRadius="10"
+                            Margin="10,0,0,0"
+                            HeightRequest="40"
+                            IsVisible="{Binding IsAddingTransaction, Converter={StaticResource InverseBooleanConverter}}"/>
+
+                    <Button Text="➖ Скрыть"
+                            Command="{Binding ToggleAddTransactionCommand}"
+                            BackgroundColor="#FF9800"
+                            TextColor="White"
+                            FontSize="14"
+                            CornerRadius="10"
+                            Margin="10,0,0,0"
+                            HeightRequest="40"
+                            IsVisible="{Binding IsAddingTransaction}"/>
                 </HorizontalStackLayout>
 
                 <!-- Сообщение при отсутствии данных -->
                 <Label Text="Нет транзакций" 
-                       IsVisible="{Binding HasData, Converter={StaticResource NotNullConverter}, ConverterParameter=true}"
+                       IsVisible="{Binding HasData, Converter={StaticResource InverseBooleanConverter}}"
                        HorizontalOptions="Center" VerticalOptions="Center"
                        FontSize="16" TextColor="Gray" Margin="0,50"/>
 
@@ -86,7 +191,6 @@
                                    HasShadow="True">
 
                                 <Grid ColumnDefinitions="*, Auto" RowDefinitions="*,*,*">
-
                                     <!-- Описание -->
                                     <Label Text="{Binding Description}" 
                                            Grid.Row="0" Grid.Column="0"
@@ -99,14 +203,18 @@
                                            FontSize="16" FontAttributes="Bold"
                                            TextColor="{Binding Type, Converter={StaticResource TransactionTypeColorConverter}}"/>
 
-                                    <!-- Категория -->
+                                    <!-- Категория и счет -->
                                     <Label Text="{Binding CategoryName}" 
                                            Grid.Row="1" Grid.Column="0"
                                            FontSize="12" TextColor="Gray"/>
 
+                                    <Label Text="{Binding AccountName}" 
+                                           Grid.Row="2" Grid.Column="0"
+                                           FontSize="12" TextColor="Gray"/>
+
                                     <!-- Дата -->
                                     <Label Text="{Binding Date, StringFormat='{0:dd.MM.yyyy HH:mm}'}" 
-                                           Grid.Row="2" Grid.Column="1"
+                                           Grid.Row="1" Grid.Column="1"
                                            FontSize="12" TextColor="Gray"/>
 
                                     <!-- Кнопка удаления -->
@@ -115,22 +223,22 @@
                                             CommandParameter="{Binding .}"
                                             BackgroundColor="Transparent"
                                             TextColor="#F44336"
-                                            Grid.Row="1" Grid.Column="1"
-                                            Grid.RowSpan="2"/>
+                                            FontSize="16"
+                                            Grid.Row="2" Grid.Column="1"/>
                                 </Grid>
                             </Frame>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
 
-                <!-- Кнопка назад -->
-                <Button Text="← Назад" 
-                        Command="{Binding GoBackCommand}"
-                        BackgroundColor="#757575"
+                <!-- Кнопка обновления -->
+                <Button Text="🔄 Обновить" 
+                        Command="{Binding RefreshCommand}"
+                        BackgroundColor="#2196F3"
                         TextColor="White"
                         CornerRadius="10"
                         HeightRequest="40"
-                        Margin="0,20"/>
+                        IsEnabled="{Binding IsNotBusy}"/>
 
             </VerticalStackLayout>
         </ScrollView>
