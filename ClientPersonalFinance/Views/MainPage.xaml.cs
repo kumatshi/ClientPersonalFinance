@@ -1,12 +1,16 @@
 using ClientPersonalFinance.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ClientPersonalFinance.Views
 {
     public partial class MainPage : ContentPage
     {
-        public MainPage(MainViewModel viewModel)
+        public MainPage()
         {
             InitializeComponent();
+
+            // Получаем ViewModel через Dependency Injection
+            var viewModel = MauiProgram.Services.GetRequiredService<MainViewModel>();
             BindingContext = viewModel;
         }
 
