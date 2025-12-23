@@ -31,6 +31,7 @@ namespace ClientPersonalFinance.ViewModels
         [RelayCommand]
         private async Task GoBackAsync()
         {
+            // Простая навигация назад
             await Shell.Current.GoToAsync("..");
         }
     }

@@ -43,23 +43,55 @@ namespace ClientPersonalFinance.Services
         {
             try
             {
+                Console.WriteLine($"[DEBUG] Тестируем соединение с: {BaseUrl}");
+
+                // Пробуем получить Swagger JSON или просто сделать GET запрос
                 var response = await _httpClient.GetAsync("swagger/v1/swagger.json");
                 var responseString = await response.Content.ReadAsStringAsync();
+
+                Console.WriteLine($"[DEBUG] Статус код: {response.StatusCode}");
+                Console.WriteLine($"[DEBUG] Ответ (первые 200 символов): {responseString.Substring(0, Math.Min(200, responseString.Length))}...");
 
                 return new ApiResponse<string>
                 {
                     Success = response.IsSuccessStatusCode,
-                    Message = response.IsSuccessStatusCode ? "Соединение установлено" : $"Ошибка: {response.StatusCode}",
+                    Message = response.IsSuccessStatusCode ?
+                        "Соединение установлено" :
+                        $"Ошибка: {response.StatusCode} - {responseString}",
                     Data = responseString
                 };
             }
             catch (Exception ex)
             {
-                return new ApiResponse<string>
+                Console.WriteLine($"[ERROR] Тест соединения: {ex.Message}");
+                Console.WriteLine($"[ERROR] Подробности: {ex.InnerException?.Message}");
+
+                // Пробуем без пути API
+                try
                 {
-                    Success = false,
-                    Message = $"Ошибка соединения: {ex.Message}"
-                };
+                    var simpleClient = new HttpClient()
+                    {
+                        BaseAddress = new Uri("https://localhost:7068/"),
+                        Timeout = TimeSpan.FromSeconds(5)
+                    };
+
+                    var simpleResponse = await simpleClient.GetAsync("");
+                    var simpleResponseString = await simpleResponse.Content.ReadAsStringAsync();
+
+                    return new ApiResponse<string>
+                    {
+                        Success = false,
+                        Message = $"API доступен, но возможно неверный путь. Ответ: {simpleResponseString.Substring(0, Math.Min(100, simpleResponseString.Length))}..."
+                    };
+                }
+                catch (Exception ex2)
+                {
+                    return new ApiResponse<string>
+                    {
+                        Success = false,
+                        Message = $"Ошибка соединения: {ex.Message}\nВнутренняя ошибка: {ex2.Message}"
+                    };
+                }
             }
         }
 
@@ -67,29 +99,51 @@ namespace ClientPersonalFinance.Services
         {
             try
             {
+                Console.WriteLine($"[DEBUG] Отправка запроса на: {BaseUrl}auth/login");
+
                 var json = JsonConvert.SerializeObject(loginDto);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var response = await _httpClient.PostAsync("auth/login", content);
                 var responseString = await response.Content.ReadAsStringAsync();
 
+                Console.WriteLine($"[DEBUG] Статус код: {response.StatusCode}");
+                Console.WriteLine($"[DEBUG] Ответ: {responseString}");
+
                 if (!response.IsSuccessStatusCode)
                 {
-                    return new ApiResponse<AuthResponseDto>
+                    // Пробуем десериализовать как ErrorResponse для получения сообщения
+                    try
                     {
-                        Success = false,
-                        Message = $"Ошибка: {response.StatusCode}"
-                    };
+                        var errorResult = JsonConvert.DeserializeObject<ApiResponse<AuthResponseDto>>(responseString);
+                        return errorResult ?? new ApiResponse<AuthResponseDto>
+                        {
+                            Success = false,
+                            Message = $"Ошибка сервера: {response.StatusCode}"
+                        };
+                    }
+                    catch
+                    {
+                        return new ApiResponse<AuthResponseDto>
+                        {
+                            Success = false,
+                            Message = $"Ошибка: {response.StatusCode}. Ответ: {responseString}"
+                        };
+                    }
                 }
 
                 var result = JsonConvert.DeserializeObject<ApiResponse<AuthResponseDto>>(responseString);
 
                 if (result?.Success == true && result.Data != null)
                 {
+                    Console.WriteLine($"[DEBUG] Успешная авторизация для пользователя: {result.Data.Username}");
+
+                    // Сохраняем токены
                     await SecureStorage.SetAsync("AuthToken", result.Data.AccessToken);
                     await SecureStorage.SetAsync("RefreshToken", result.Data.RefreshToken);
                     await SecureStorage.SetAsync("UserId", result.Data.UserId.ToString());
 
+                    // Устанавливаем заголовок авторизации
                     _httpClient.DefaultRequestHeaders.Authorization =
                         new AuthenticationHeaderValue("Bearer", result.Data.AccessToken);
                 }
@@ -102,6 +156,9 @@ namespace ClientPersonalFinance.Services
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"[ERROR] Ошибка при входе: {ex.Message}");
+                Console.WriteLine($"[ERROR] StackTrace: {ex.StackTrace}");
+
                 return new ApiResponse<AuthResponseDto>
                 {
                     Success = false,
@@ -198,5 +255,7 @@ namespace ClientPersonalFinance.Services
         {
             return SecureStorage.GetAsync("AuthToken").Result ?? string.Empty;
         }
+
+
     }
 }

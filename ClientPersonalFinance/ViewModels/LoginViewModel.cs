@@ -65,11 +65,11 @@ namespace ClientPersonalFinance.ViewModels
                 {
                     // Успешный вход
                     await Shell.Current.GoToAsync("//MainPage");
-                    Password = string.Empty; // Очищаем пароль
+                    Password = string.Empty;
                 }
                 else
                 {
-                    ErrorMessage = result.Message ?? "Ошибка авторизации";
+                    ErrorMessage = result.Message ?? "Неверные учетные данные";
                     HasError = true;
                 }
             }
