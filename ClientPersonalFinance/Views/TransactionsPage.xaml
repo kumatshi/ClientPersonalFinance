@@ -18,19 +18,19 @@
         <ScrollView>
             <VerticalStackLayout Spacing="20" Padding="20">
 
-                <!-- Форма добавления транзакции -->
+               
                 <Frame IsVisible="{Binding IsAddingTransaction}"
-                       BackgroundColor="#E8F5E9"
+                       BackgroundColor="Black"
                        BorderColor="#4CAF50"
                        Padding="15"
                        CornerRadius="10">
                     <VerticalStackLayout Spacing="10">
-                        <Label Text="➕ Новая транзакция" 
+                        <Label Text=" Новая транзакция" 
                                FontSize="16" 
                                FontAttributes="Bold"
                                TextColor="#2E7D32"/>
 
-                        <!-- Сумма -->
+                     
                         <VerticalStackLayout Spacing="5">
                             <Label Text="Сумма *" 
                                    FontSize="14"/>
@@ -40,7 +40,7 @@
                                    ClearButtonVisibility="WhileEditing"/>
                         </VerticalStackLayout>
 
-                        <!-- Описание -->
+                     
                         <VerticalStackLayout Spacing="5">
                             <Label Text="Описание *" 
                                    FontSize="14"/>
@@ -50,7 +50,7 @@
                                    ClearButtonVisibility="WhileEditing"/>
                         </VerticalStackLayout>
 
-                        <!-- Дата -->
+                     
                         <VerticalStackLayout Spacing="5">
                             <Label Text="Дата" 
                                    FontSize="14"/>
@@ -58,7 +58,7 @@
                                         Format="dd.MM.yyyy"/>
                         </VerticalStackLayout>
 
-                        <!-- Тип транзакции -->
+                     
                         <VerticalStackLayout Spacing="5">
                             <Label Text="Тип *" 
                                    FontSize="14"/>
@@ -71,7 +71,7 @@
                             </Picker>
                         </VerticalStackLayout>
 
-                        <!-- Счет -->
+                    
                         <VerticalStackLayout Spacing="5">
                             <Label Text="Счет *" 
                                    FontSize="14"/>
@@ -81,7 +81,7 @@
                                     SelectedItem="{Binding SelectedAccount}"/>
                         </VerticalStackLayout>
 
-                        <!-- Категория -->
+                      
                         <VerticalStackLayout Spacing="5">
                             <Label Text="Категория *" 
                                    FontSize="14"/>
@@ -91,9 +91,9 @@
                                     SelectedItem="{Binding SelectedCategory}"/>
                         </VerticalStackLayout>
 
-                        <!-- Кнопки формы -->
+                   
                         <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
-                            <Button Text="✅ Добавить"
+                            <Button Text=" Добавить"
                                     Command="{Binding AddTransactionCommand}"
                                     BackgroundColor="#4CAF50"
                                     TextColor="White"
@@ -101,7 +101,7 @@
                                     WidthRequest="120"
                                     IsEnabled="{Binding IsNotBusy}"/>
 
-                            <Button Text="❌ Отмена"
+                            <Button Text=" Отмена"
                                     Command="{Binding CancelAddTransactionCommand}"
                                     BackgroundColor="#F44336"
                                     TextColor="White"
@@ -109,7 +109,7 @@
                                     WidthRequest="120"/>
                         </HorizontalStackLayout>
 
-                        <!-- Отладочная информация -->
+                    
                         <Frame IsVisible="False" BackgroundColor="#FFF3E0" Padding="10">
                             <VerticalStackLayout>
                                 <Label Text="Отладка:" FontSize="12" FontAttributes="Bold"/>
@@ -124,33 +124,32 @@
                     </VerticalStackLayout>
                 </Frame>
 
-                <!-- Статус -->
+         
                 <Label Text="{Binding StatusMessage}"
                        FontSize="14"
                        TextColor="Gray"
                        HorizontalOptions="Center"/>
 
-                <!-- Финансовая сводка -->
+              
                 <Frame IsVisible="{Binding Summary, Converter={StaticResource NotNullConverter}}"
                        BackgroundColor="#F5F5F5" Padding="15" CornerRadius="10">
                     <VerticalStackLayout Spacing="10">
-                        <Label Text="📊 Финансовая сводка" 
+                        <Label Text=" Финансовая сводка" 
                                FontSize="16" FontAttributes="Bold"/>
 
                         <Grid ColumnDefinitions="*,*" RowDefinitions="*,*,*" RowSpacing="8">
-                            <!-- Доходы -->
+                          
                             <Label Text="Доходы:" Grid.Row="0" Grid.Column="0"/>
                             <Label Text="{Binding Summary.TotalIncome, StringFormat='{0:C}'}" 
                                    Grid.Row="0" Grid.Column="1" 
                                    TextColor="#4CAF50" FontAttributes="Bold"/>
 
-                            <!-- Расходы -->
                             <Label Text="Расходы:" Grid.Row="1" Grid.Column="0"/>
                             <Label Text="{Binding Summary.TotalExpenses, StringFormat='{0:C}'}" 
                                    Grid.Row="1" Grid.Column="1" 
                                    TextColor="#F44336" FontAttributes="Bold"/>
 
-                            <!-- Баланс -->
+                            
                             <Label Text="Баланс:" Grid.Row="2" Grid.Column="0"/>
                             <Label Text="{Binding Summary.Balance, StringFormat='{0:C}'}" 
                                    Grid.Row="2" Grid.Column="1" 
@@ -160,13 +159,12 @@
                     </VerticalStackLayout>
                 </Frame>
 
-                <!-- Заголовок и кнопка добавления -->
                 <HorizontalStackLayout>
-                    <Label Text="📋 Транзакции" 
+                    <Label Text=" Транзакции" 
                            FontSize="18" FontAttributes="Bold"
                            VerticalOptions="Center"/>
 
-                    <Button Text="➕ Добавить"
+                    <Button Text=" Добавить"
                             Command="{Binding ToggleAddTransactionCommand}"
                             BackgroundColor="#2196F3"
                             TextColor="White"
@@ -176,7 +174,7 @@
                             HeightRequest="40"
                             IsVisible="{Binding IsAddingTransaction, Converter={StaticResource InverseBooleanConverter}}"/>
 
-                    <Button Text="➖ Скрыть"
+                    <Button Text=" Скрыть"
                             Command="{Binding ToggleAddTransactionCommand}"
                             BackgroundColor="#FF9800"
                             TextColor="White"
@@ -187,38 +185,33 @@
                             IsVisible="{Binding IsAddingTransaction}"/>
                 </HorizontalStackLayout>
 
-                <!-- Сообщение при отсутствии данных -->
                 <Label Text="Нет транзакций" 
                        IsVisible="{Binding HasData, Converter={StaticResource InverseBooleanConverter}}"
                        HorizontalOptions="Center" VerticalOptions="Center"
                        FontSize="16" TextColor="Gray" Margin="0,50"/>
 
-                <!-- Список транзакций -->
                 <CollectionView ItemsSource="{Binding Transactions}"
                                 IsVisible="{Binding HasData}"
                                 SelectionMode="None">
 
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Frame BackgroundColor="White" 
+                            <Frame BackgroundColor="Black" 
                                    Padding="15" CornerRadius="10"
                                    Margin="0,0,0,10"
                                    HasShadow="True">
 
                                 <Grid ColumnDefinitions="*, Auto" RowDefinitions="*,*,*">
-                                    <!-- Описание -->
                                     <Label Text="{Binding Description}" 
                                            Grid.Row="0" Grid.Column="0"
                                            FontSize="14" FontAttributes="Bold"
                                            LineBreakMode="TailTruncation"/>
 
-                                    <!-- Сумма -->
                                     <Label Text="{Binding Amount, StringFormat='{0:C}'}" 
                                            Grid.Row="0" Grid.Column="1"
                                            FontSize="16" FontAttributes="Bold"
                                            TextColor="{Binding Type, Converter={StaticResource TransactionTypeColorConverter}}"/>
 
-                                    <!-- Категория и счет -->
                                     <Label Text="{Binding CategoryName}" 
                                            Grid.Row="1" Grid.Column="0"
                                            FontSize="12" TextColor="Gray"/>
@@ -227,13 +220,11 @@
                                            Grid.Row="2" Grid.Column="0"
                                            FontSize="12" TextColor="Gray"/>
 
-                                    <!-- Дата -->
                                     <Label Text="{Binding Date, StringFormat='{0:dd.MM.yyyy HH:mm}'}" 
                                            Grid.Row="1" Grid.Column="1"
                                            FontSize="12" TextColor="Gray"/>
 
-                                    <!-- Кнопка удаления -->
-                                    <Button Text="🗑️" 
+                                    <Button Text="удалить" 
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteTransactionCommand}"
                                             CommandParameter="{Binding .}"
                                             BackgroundColor="Transparent"
@@ -246,8 +237,8 @@
                     </CollectionView.ItemTemplate>
                 </CollectionView>
 
-                <!-- Кнопка обновления -->
-                <Button Text="🔄 Обновить" 
+
+                <Button Text=" Обновить" 
                         Command="{Binding RefreshCommand}"
                         BackgroundColor="#2196F3"
                         TextColor="White"

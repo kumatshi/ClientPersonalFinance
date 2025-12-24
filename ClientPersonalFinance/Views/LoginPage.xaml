@@ -7,7 +7,7 @@
     <ScrollView>
         <VerticalStackLayout Spacing="25" Padding="30,60,30,30">
 
-            <!-- Заголовок -->
+            
             <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
                 <Label Text="Personal Finance" 
                        FontSize="28" 
@@ -19,10 +19,10 @@
                        HorizontalOptions="Center"/>
             </VerticalStackLayout>
 
-            <!-- Форма входа -->
+            
             <VerticalStackLayout Spacing="15">
 
-                <!-- Поле для ввода email/логина -->
+                
                 <VerticalStackLayout Spacing="5">
                     <Label Text="Имя пользователя или Email" 
                            FontSize="14"
@@ -32,7 +32,7 @@
                            Keyboard="Text"/>
                 </VerticalStackLayout>
 
-                <!-- Поле для ввода пароля -->
+                
                 <VerticalStackLayout Spacing="5">
                     <Label Text="Пароль" 
                            FontSize="14"
@@ -42,29 +42,11 @@
                            IsPassword="True"/>
                 </VerticalStackLayout>
 
-                <!-- Сообщение об ошибке -->
-                <Frame IsVisible="{Binding HasError}"
-                       BackgroundColor="#FFF2F2"
-                       BorderColor="#FFCCCC"
-                       Padding="15"
-                       CornerRadius="5">
-                    <Label Text="{Binding ErrorMessage}"
-                           TextColor="#D32F2F"
-                           FontSize="13"
-                           HorizontalTextAlignment="Center"/>
-                </Frame>
 
-                <!-- Кнопка теста соединения -->
-                <Button Text="🔍 Тест соединения с API" 
-                        Command="{Binding TestConnectionCommand}"
-                        BackgroundColor="#FF9800"
-                        TextColor="White"
-                        FontSize="14"
-                        CornerRadius="10"
-                        HeightRequest="40"
-                        IsEnabled="{Binding IsNotBusy}"/>
 
-                <!-- Кнопка входа -->
+              
+
+                
                 <Button Text="Войти" 
                         Command="{Binding LoginCommand}"
                         BackgroundColor="#2196F3"
@@ -74,29 +56,15 @@
                         HeightRequest="50"
                         IsEnabled="{Binding IsNotBusy}"/>
 
-                <!-- Индикатор загрузки -->
+                
                 <ActivityIndicator IsVisible="{Binding IsBusy}"
                                    IsRunning="{Binding IsBusy}"
                                    Color="#2196F3"
                                    HorizontalOptions="Center"/>
 
-                <!-- Тестовые данные -->
-                <Frame BackgroundColor="#F5F5F5" Padding="10" CornerRadius="5">
-                    <VerticalStackLayout Spacing="5">
-                        <Label Text="Тестовые данные:" 
-                               FontSize="12"
-                               FontAttributes="Bold"
-                               TextColor="#666"/>
-                        <Label Text="• admin / Admin123!" 
-                               FontSize="11"
-                               TextColor="#666"/>
-                        <Label Text="• demo / Demo123!" 
-                               FontSize="11"
-                               TextColor="#666"/>
-                    </VerticalStackLayout>
-                </Frame>
+              
 
-                <!-- Ссылка на регистрацию -->
+               
                 <HorizontalStackLayout HorizontalOptions="Center" Spacing="5">
                     <Label Text="Нет аккаунта?" 
                            TextColor="Gray"/>
