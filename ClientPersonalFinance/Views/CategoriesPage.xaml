@@ -38,7 +38,7 @@
                 <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
                     <Button Text=" Загрузить все"
                             Command="{Binding LoadCategoriesCommand}"
-                            BackgroundColor="#FF9800"
+                            BackgroundColor="Black"
                             TextColor="White"
                             CornerRadius="10"
                             HeightRequest="40"
@@ -46,14 +46,7 @@
                 </HorizontalStackLayout>
 
                 
-                <Button Text=" Загрузить категории"
-                        Command="{Binding LoadCategoriesCommand}"
-                        BackgroundColor="#FF9800"
-                        TextColor="White"
-                        CornerRadius="10"
-                        HeightRequest="50"
-                        IsEnabled="{Binding IsNotBusy}"
-                        IsVisible="{Binding HasData, Converter={StaticResource InverseBooleanConverter}}"/>
+               
 
               
 
@@ -178,7 +171,7 @@
                 
                 <Button Text=" Обновить список" 
                         Command="{Binding RefreshCommand}"
-                        BackgroundColor="#2196F3"
+                        BackgroundColor="Black"
                         TextColor="White"
                         CornerRadius="10"
                         HeightRequest="40"

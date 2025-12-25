@@ -49,7 +49,7 @@
                 
                 <Button Text="Войти" 
                         Command="{Binding LoginCommand}"
-                        BackgroundColor="#2196F3"
+                        BackgroundColor="Black"
                         TextColor="White"
                         FontSize="16"
                         CornerRadius="10"
@@ -59,7 +59,7 @@
                 
                 <ActivityIndicator IsVisible="{Binding IsBusy}"
                                    IsRunning="{Binding IsBusy}"
-                                   Color="#2196F3"
+                                   Color="#219"
                                    HorizontalOptions="Center"/>
 
               
@@ -69,7 +69,7 @@
                     <Label Text="Нет аккаунта?" 
                            TextColor="Gray"/>
                     <Label Text="Зарегистрироваться" 
-                           TextColor="#2196F3"
+                           TextColor="Gray"
                            FontAttributes="Bold">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding GoToRegisterCommand}"/>

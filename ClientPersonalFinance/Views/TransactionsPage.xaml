@@ -95,7 +95,7 @@
                         <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
                             <Button Text=" Добавить"
                                     Command="{Binding AddTransactionCommand}"
-                                    BackgroundColor="#4CAF50"
+                                    BackgroundColor="Black"
                                     TextColor="White"
                                     CornerRadius="10"
                                     WidthRequest="120"
@@ -103,7 +103,7 @@
 
                             <Button Text=" Отмена"
                                     Command="{Binding CancelAddTransactionCommand}"
-                                    BackgroundColor="#F44336"
+                                    BackgroundColor="Black"
                                     TextColor="White"
                                     CornerRadius="10"
                                     WidthRequest="120"/>
@@ -176,7 +176,7 @@
 
                     <Button Text=" Скрыть"
                             Command="{Binding ToggleAddTransactionCommand}"
-                            BackgroundColor="#FF9800"
+                            BackgroundColor="Black"
                             TextColor="White"
                             FontSize="14"
                             CornerRadius="10"
@@ -240,7 +240,7 @@
 
                 <Button Text=" Обновить" 
                         Command="{Binding RefreshCommand}"
-                        BackgroundColor="#2196F3"
+                        BackgroundColor="Black"
                         TextColor="White"
                         CornerRadius="10"
                         HeightRequest="40"

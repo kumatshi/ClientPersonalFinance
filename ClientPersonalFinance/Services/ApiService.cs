@@ -248,7 +248,18 @@ namespace ClientPersonalFinance.Services
 
         public string GetAccessToken()
         {
-            return SecureStorage.GetAsync("AuthToken").Result ?? string.Empty;
+            try
+            {
+                // Пробуем получить синхронно
+                var task = SecureStorage.GetAsync("AuthToken");
+                task.Wait(); // Ждем завершения
+                return task.Result ?? string.Empty;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] Ошибка получения токена: {ex.Message}");
+                return string.Empty;
+            }
         }
         public async Task<ApiResponse<TransactionDto>> CreateTransactionAsync(CreateTransactionDto transaction)
         {

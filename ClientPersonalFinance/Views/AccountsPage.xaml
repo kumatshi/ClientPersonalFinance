@@ -25,8 +25,8 @@
 
                 
                 <Frame IsVisible="{Binding HasData}"
-                       BackgroundColor="#E3F2FD"
-                       BorderColor="#2196F3"
+                       BackgroundColor="Black"
+                       BorderColor="White"
                        Padding="15"
                        CornerRadius="10">
                     <VerticalStackLayout Spacing="8">
@@ -56,7 +56,7 @@
                 
                 <Button Text=" Загрузить счета"
                         Command="{Binding LoadAccountsCommand}"
-                        BackgroundColor="#2196F3"
+                        BackgroundColor="Black"
                         TextColor="White"
                         CornerRadius="10"
                         HeightRequest="50"
