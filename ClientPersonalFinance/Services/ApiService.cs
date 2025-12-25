@@ -250,6 +250,52 @@ namespace ClientPersonalFinance.Services
         {
             return SecureStorage.GetAsync("AuthToken").Result ?? string.Empty;
         }
+        public async Task<ApiResponse<TransactionDto>> CreateTransactionAsync(CreateTransactionDto transaction)
+        {
+            try
+            {
+                Console.WriteLine($"[DEBUG] Создание транзакции: UserId={transaction.UserId}, Amount={transaction.Amount}, " +
+                                 $"Type={transaction.Type}, CategoryId={transaction.CategoryId}, AccountId={transaction.AccountId}");
+
+                var json = JsonConvert.SerializeObject(transaction);
+                Console.WriteLine($"[DEBUG] Отправляемый JSON: {json}");
+
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PostAsync("transactions", content);
+                var responseString = await response.Content.ReadAsStringAsync();
+
+                Console.WriteLine($"[DEBUG] Ответ сервера: {response.StatusCode}");
+                Console.WriteLine($"[DEBUG] Тело ответа: {responseString}");
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new ApiResponse<TransactionDto>
+                    {
+                        Success = false,
+                        Message = $"Ошибка: {response.StatusCode} - {responseString}"
+                    };
+                }
+
+                return JsonConvert.DeserializeObject<ApiResponse<TransactionDto>>(responseString)
+                    ?? new ApiResponse<TransactionDto>
+                    {
+                        Success = false,
+                        Message = "Не удалось десериализовать ответ"
+                    };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] Ошибка создания транзакции: {ex.Message}");
+                Console.WriteLine($"[ERROR] StackTrace: {ex.StackTrace}");
+
+                return new ApiResponse<TransactionDto>
+                {
+                    Success = false,
+                    Message = $"Ошибка: {ex.Message}"
+                };
+            }
+        }
 
 
     }

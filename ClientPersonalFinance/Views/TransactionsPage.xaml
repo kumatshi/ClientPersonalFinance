@@ -110,7 +110,7 @@
                         </HorizontalStackLayout>
 
                     
-                        <Frame IsVisible="False" BackgroundColor="#FFF3E0" Padding="10">
+                        <Frame IsVisible="False" BackgroundColor="Black" Padding="10">
                             <VerticalStackLayout>
                                 <Label Text="Отладка:" FontSize="12" FontAttributes="Bold"/>
                                 <Label Text="{Binding NewTransaction.Amount, StringFormat='Сумма: {0}'}" FontSize="10"/>
@@ -132,7 +132,7 @@
 
               
                 <Frame IsVisible="{Binding Summary, Converter={StaticResource NotNullConverter}}"
-                       BackgroundColor="#F5F5F5" Padding="15" CornerRadius="10">
+                       BackgroundColor="Black" Padding="15" CornerRadius="10">
                     <VerticalStackLayout Spacing="10">
                         <Label Text=" Финансовая сводка" 
                                FontSize="16" FontAttributes="Bold"/>

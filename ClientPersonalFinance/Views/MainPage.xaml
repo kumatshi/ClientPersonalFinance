@@ -29,7 +29,7 @@
 
             <Button Text=" Мои счета"
                     Command="{Binding GoToAccountsCommand}"
-                    BackgroundColor="#4CAF50"
+                    BackgroundColor="Black"
                     TextColor="White"
                     CornerRadius="10"
                     HeightRequest="50"
@@ -37,7 +37,7 @@
 
             <Button Text=" Категории"
                     Command="{Binding GoToCategoriesCommand}"
-                    BackgroundColor="#FF9800"
+                    BackgroundColor="Black"
                     TextColor="White"
                     CornerRadius="10"
                     HeightRequest="50"
@@ -45,7 +45,7 @@
 
             <Button Text=" Выход"
                     Command="{Binding LogoutCommand}"
-                    BackgroundColor="#F44336"
+                    BackgroundColor="Black"
                     TextColor="White"
                     CornerRadius="10"
                     HeightRequest="50"

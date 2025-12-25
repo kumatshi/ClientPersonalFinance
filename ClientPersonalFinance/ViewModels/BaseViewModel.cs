@@ -5,6 +5,7 @@ namespace ClientPersonalFinance.ViewModels
     public partial class BaseViewModel : ObservableObject
     {
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsNotBusy))] 
         private bool _isBusy;
 
         [ObservableProperty]

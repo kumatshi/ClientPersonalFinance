@@ -11,6 +11,7 @@
         public string CategoryColor { get; set; } = string.Empty;
         public string AccountName { get; set; } = string.Empty;
         public string AccountType { get; set; } = string.Empty;
+        public int UserId { get; set; }
     }
 
     public class CreateTransactionDto
@@ -21,6 +22,7 @@
         public int Type { get; set; } // 0 - Income, 1 - Expense
         public int CategoryId { get; set; }
         public int AccountId { get; set; }
+        public int UserId { get; set; }
     }
 
     public class UpdateTransactionDto
@@ -31,5 +33,6 @@
         public int Type { get; set; }
         public int CategoryId { get; set; }
         public int AccountId { get; set; }
+        public int UserId { get; set; }
     }
 }
